@@ -1,0 +1,28 @@
+{
+  "name": "proled-website",
+  "version": "1.0.0",
+  "description": "PROLED Engineering Services Limited - Professional engineering services website",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild speed-insights.js --bundle --minify --outfile=speed-insights.bundle.js --format=iife",
+    "dev": "npx http-server -p 3000",
+    "lint": "echo 'No linter configured'",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "engineering",
+    "electrical",
+    "mechanical",
+    "instrumentation"
+  ],
+  "author": "PROLED Engineering Services Limited",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.12"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "http-server": "^14.1.1"
+  }
+}
