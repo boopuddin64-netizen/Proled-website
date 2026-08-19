@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/success",
+      "destination": "/success.html"
+    }
+  ]
+}
