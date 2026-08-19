@@ -192,29 +192,66 @@
   preselectService();
 
   /**
-   * Form submission handling (for client-side feedback)
-   * Note: Netlify handles the actual form submission
+   * Submit contact forms to the Vercel Function at /api/contact.
    */
-  const forms = document.querySelectorAll('form[data-netlify="true"]');
+  const forms = document.querySelectorAll('form.contact-form');
   forms.forEach(form => {
-    form.addEventListener('submit', function(e) {
-      // Show loading state on submit button
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
       const submitBtn = form.querySelector('.form-submit');
+      const originalText = submitBtn ? submitBtn.innerHTML : '';
+      let status = form.querySelector('.form-status');
+
+      if (!status) {
+        status = document.createElement('p');
+        status.className = 'form-status';
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        form.insertBefore(status, submitBtn || null);
+      }
+
       if (submitBtn) {
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Sending...
-        `;
         submitBtn.disabled = true;
-        
-        // Restore button after submission (Netlify will redirect anyway)
-        setTimeout(() => {
-          submitBtn.innerHTML = originalText;
+        submitBtn.innerHTML = 'Sending...';
+      }
+      status.textContent = '';
+      status.className = 'form-status';
+
+      const formData = new FormData(form);
+      const payload = {};
+      for (const [key, value] of formData.entries()) {
+        if (key === 'services') {
+          payload[key] = payload[key] || [];
+          payload[key].push(value);
+        } else {
+          payload[key] = value;
+        }
+      }
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'We could not send your message.');
+        }
+
+        form.reset();
+        status.textContent = 'Thank you. Your message has been sent successfully.';
+        status.classList.add('is-success');
+      } catch (error) {
+        status.textContent = error.message || 'Something went wrong. Please call or email us directly.';
+        status.classList.add('is-error');
+      } finally {
+        if (submitBtn) {
           submitBtn.disabled = false;
-        }, 5000);
+          submitBtn.innerHTML = originalText;
+        }
       }
     });
   });

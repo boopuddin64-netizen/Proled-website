@@ -1342,6 +1342,32 @@ input, textarea, select {
   box-shadow: var(--shadow-blue);
 }
 
+.form-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.form-status {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.form-status.is-success {
+  color: #14532D;
+  background: #DCFCE7;
+  border: 1px solid #86EFAC;
+}
+
+.form-status.is-error {
+  color: #7F1D1D;
+  background: #FEE2E2;
+  border: 1px solid #FCA5A5;
+}
+
 /* Project Inquiry Form Specific */
 .project-inquiry-form .form-group:nth-child(5),
 .project-inquiry-form .form-group:nth-child(9) {
